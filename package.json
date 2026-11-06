@@ -8,7 +8,8 @@
     "build": "webpack --mode production",
     "lint": "eslint src tests --ext .ts",
     "format": "prettier --write .",
-    "test": "mocha"
+    "test": "mocha",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
