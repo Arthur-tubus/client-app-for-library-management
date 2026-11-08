@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack serve",
-    "build": "webpack --mode production",
+    "start": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
     "lint": "eslint src tests --ext .ts",
     "format": "prettier --write .",
-    "test": "mocha",
-    "prepare": "husky"
+    "test": "mocha"
   },
   "keywords": [],
   "author": "",
