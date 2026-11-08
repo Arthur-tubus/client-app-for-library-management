@@ -25,10 +25,10 @@ export namespace Validation {
     return YEAR_REGEX.test(trimmed) && Number(trimmed) <= new Date().getFullYear();
   }
 
-  function buildResult(fieldErrors: Record<string, string>): ValidationResult {
+  const buildResult = (fieldErrors: Record<string, string>): ValidationResult => {
     const errors = Object.values(fieldErrors);
     return { isValid: errors.length === 0, errors, fieldErrors };
-  }
+  };
 
   export function validateBookForm(data: {
     title: string;
