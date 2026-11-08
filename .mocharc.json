@@ -1,0 +1,4 @@
+{
+  "require": "tsx/cjs",
+  "spec": "tests/**/*.test.ts"
+}
