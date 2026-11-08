@@ -9,5 +9,5 @@
     "node": true,
     "mocha": true
   },
-  "ignorePatterns": ["dist", "node_modules", "webpack.config.js", "src/app.ts"]
+  "ignorePatterns": ["dist", "node_modules", "webpack.config.js"]
 }

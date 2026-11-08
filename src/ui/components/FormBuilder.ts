@@ -25,7 +25,7 @@ export function buildForm<T extends Record<string, string>>(
   options: FormBuilderOptions<T>,
 ): HTMLFormElement {
   const form = document.createElement('form');
-  form.className = 'card p-3 mb-4';
+  form.className = 'card shadow-sm p-3 mb-4';
   form.noValidate = true;
 
   if (options.title) {

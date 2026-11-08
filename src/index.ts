@@ -5,6 +5,10 @@ import { createButton } from './ui/components/Button';
 import { promptModal, showModal } from './ui/components/Modal';
 import { renderBookForm } from './ui/components/BookForm';
 import { renderUserForm } from './ui/components/UserForm';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap';
+import './styles/main.scss';
+import './app';
 
 const app = document.getElementById('app') as HTMLDivElement;
 
