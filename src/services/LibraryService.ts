@@ -6,6 +6,7 @@ import { Library } from './Library';
 import { Storage } from './Storage';
 
 export const MAX_BORROWED_BOOKS = 3;
+export type DeleteUserResult = 'success' | 'not-found' | 'has-borrowed-books';
 
 const BOOKS_KEY = 'library:books';
 const USERS_KEY = 'library:users';
@@ -49,6 +50,38 @@ export class LibraryService {
 
   countBorrowedBy(userId: string): number {
     return this.books.find((book) => book.getBorrowedBy() === userId).length;
+  }
+
+  searchBooks(query: string): Book[] {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) {
+      return this.books.getAll();
+    }
+    return this.books.find(
+      (book) =>
+        book.getTitle().toLowerCase().includes(normalized) ||
+        book.getAuthor().toLowerCase().includes(normalized),
+    );
+  }
+
+  deleteBook(id: string): boolean {
+    const removed = this.books.remove(id);
+    if (removed) {
+      this.saveBooks();
+    }
+    return removed;
+  }
+
+  deleteUser(id: string): DeleteUserResult {
+    if (!this.users.findById(id)) {
+      return 'not-found';
+    }
+    if (this.countBorrowedBy(id) > 0) {
+      return 'has-borrowed-books';
+    }
+    this.users.remove(id);
+    this.saveUsers();
+    return 'success';
   }
 
   borrowBook(bookId: string, userId: string): BorrowResult {

@@ -66,4 +66,26 @@ describe('LibraryService', () => {
     expect(restored.getBooks()).to.have.length(4);
     expect(restored.getBooks()[0].getBorrowedBy()).to.equal('100');
   });
+
+  it('шукає книги за назвою або автором без урахування регістру', () => {
+    service.addBook(new Book('Clean Code', 'Robert Martin', 2008, '10'));
+    expect(service.searchBooks('clean')).to.have.length(1);
+    expect(service.searchBooks('MARTIN')).to.have.length(1);
+    expect(service.searchBooks('')).to.have.length(5);
+    expect(service.searchBooks('nothing')).to.have.length(0);
+  });
+
+  it('видаляє книгу', () => {
+    expect(service.deleteBook('1')).to.equal(true);
+    expect(service.getBooks()).to.have.length(3);
+    expect(service.deleteBook('1')).to.equal(false);
+  });
+
+  it('не видаляє користувача з позиченими книгами', () => {
+    service.borrowBook('1', '100');
+    expect(service.deleteUser('100')).to.equal('has-borrowed-books');
+    service.returnBook('1');
+    expect(service.deleteUser('100')).to.equal('success');
+    expect(service.deleteUser('100')).to.equal('not-found');
+  });
 });

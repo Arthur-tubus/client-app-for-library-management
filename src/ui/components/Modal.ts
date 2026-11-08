@@ -142,3 +142,25 @@ export function promptModal(options: PromptOptions): Promise<string | null> {
   const { instance, closed } = openModal(element);
   return closed.then(() => result);
 }
+
+export function confirmModal(message: string, confirmLabel = 'Видалити'): Promise<boolean> {
+  const { element, body, footer } = createModalShell();
+
+  const text = document.createElement('p');
+  text.className = 'mb-0';
+  text.textContent = message;
+  body.append(text);
+
+  let confirmed = false;
+
+  const cancelBtn = createButton('Скасувати', 'secondary');
+  cancelBtn.setAttribute('data-bs-dismiss', 'modal');
+  const confirmBtn = createButton(confirmLabel, 'danger', 'button', () => {
+    confirmed = true;
+    instance.hide();
+  });
+  footer.append(cancelBtn, confirmBtn);
+
+  const { instance, closed } = openModal(element);
+  return closed.then(() => confirmed);
+}
