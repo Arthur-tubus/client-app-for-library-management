@@ -1,13 +1,23 @@
+import { ButtonVariant, createButton } from './Button';
+
 export interface FieldConfig<T> {
   name: keyof T;
   label: string;
   type: 'text' | 'number';
 }
 
+export interface FormValidationResult {
+  isValid: boolean;
+  errors: string[];
+  fieldErrors?: Record<string, string>;
+}
+
 export interface FormBuilderOptions<T> {
+  title?: string;
   fields: FieldConfig<T>[];
   submitLabel: string;
-  validate: (data: T) => { isValid: boolean; errors: string[] };
+  submitVariant?: ButtonVariant;
+  validate: (data: T) => FormValidationResult;
   onValid: (data: T) => void;
 }
 
@@ -16,32 +26,50 @@ export function buildForm<T extends Record<string, string>>(
 ): HTMLFormElement {
   const form = document.createElement('form');
   form.className = 'card p-3 mb-4';
+  form.noValidate = true;
+
+  if (options.title) {
+    const heading = document.createElement('h2');
+    heading.className = 'h5 mb-3';
+    heading.textContent = options.title;
+    form.append(heading);
+  }
 
   const inputs = new Map<keyof T, HTMLInputElement>();
+  const errorEls = new Map<keyof T, HTMLDivElement>();
 
   options.fields.forEach((field) => {
     const wrapper = document.createElement('div');
     wrapper.className = 'mb-2';
 
-    const label = document.createElement('label');
-    label.className = 'form-label';
-    label.textContent = field.label;
-
     const input = document.createElement('input');
     input.type = field.type;
     input.className = 'form-control';
     input.name = String(field.name);
+    input.placeholder = field.label;
+    input.setAttribute('aria-label', field.label);
+
+    const error = document.createElement('div');
+    error.className = 'text-danger small';
 
     inputs.set(field.name, input);
-    wrapper.append(label, input);
+    errorEls.set(field.name, error);
+    wrapper.append(input, error);
     form.append(wrapper);
   });
 
-  const submitBtn = createButton(options.submitLabel, 'primary', 'submit');
-  form.append(submitBtn);
+  form.append(createButton(options.submitLabel, options.submitVariant ?? 'success', 'submit'));
+
+  const clearErrors = (): void => {
+    inputs.forEach((input) => input.classList.remove('is-invalid'));
+    errorEls.forEach((el) => {
+      el.textContent = '';
+    });
+  };
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+    clearErrors();
 
     const data = {} as T;
     inputs.forEach((input, key) => {
@@ -50,9 +78,14 @@ export function buildForm<T extends Record<string, string>>(
 
     const result = options.validate(data);
     if (!result.isValid) {
-      import('./Modal').then(({ showModal }) =>
-        showModal({ title: 'Помилка валідації', message: result.errors.join('\n'), type: 'error' }),
-      );
+      Object.entries(result.fieldErrors ?? {}).forEach(([name, message]) => {
+        const key = name as keyof T;
+        inputs.get(key)?.classList.add('is-invalid');
+        const el = errorEls.get(key);
+        if (el) {
+          el.textContent = message;
+        }
+      });
       return;
     }
 

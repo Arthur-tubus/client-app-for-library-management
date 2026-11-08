@@ -3,6 +3,8 @@ import 'bootstrap';
 import './styles/main.scss';
 import { createButton } from './ui/components/Button';
 import { promptModal, showModal } from './ui/components/Modal';
+import { renderBookForm } from './ui/components/BookForm';
+import { renderUserForm } from './ui/components/UserForm';
 
 const app = document.getElementById('app') as HTMLDivElement;
 
@@ -23,3 +25,6 @@ app.append(
     }
   }),
 );
+
+renderBookForm(app, (book) => console.log(book.toJSON()));
+renderUserForm(app, (user) => console.log(user.toJSON()));

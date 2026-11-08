@@ -9,13 +9,5 @@
     "node": true,
     "mocha": true
   },
-  "ignorePatterns": [
-    "dist",
-    "node_modules",
-    "webpack.config.js",
-    "src/app.ts",
-    "src/services/Library.ts",
-    "src/ui/components/BookForm.ts",
-    "src/ui/components/FormBuilder.ts"
-  ]
+  "ignorePatterns": ["dist", "node_modules", "webpack.config.js", "src/app.ts"]
 }
